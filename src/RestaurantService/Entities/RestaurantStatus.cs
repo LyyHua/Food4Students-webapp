@@ -1,6 +1,6 @@
 namespace RestaurantService.Entities;
 
-public enum RestaurantStatus
+public enum Status
 {
     Pending,
     Approved,
