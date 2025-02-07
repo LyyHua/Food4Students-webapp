@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
@@ -12,8 +13,22 @@ namespace RestaurantService.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class RestaurantsController(RestaurantDbContext context, IMapper mapper) : ControllerBase
+public class RestaurantsController(RestaurantDbContext context,
+    IMapper mapper, IPublishEndpoint publishEndpoint) : ControllerBase
 {
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetRestaurants(string date)
+    {
+        var query = context.Restaurants.AsQueryable();
+
+        if (!string.IsNullOrEmpty(date))
+        {
+            query = query.Where(x => x.CreatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime()) > 0);
+        }
+
+        return await query.ProjectTo<RestaurantDto>(mapper.ConfigurationProvider).ToListAsync();
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<RestaurantDto>> GetRestaurantById(Guid id)
     {
@@ -29,10 +44,6 @@ public class RestaurantsController(RestaurantDbContext context, IMapper mapper) 
     [HttpPost]
     public async Task<ActionResult<Restaurant>> CreateRestaurant(CreateAndUpdateRestaurantDto restaurantDto)
     {
-        // var restaurant = context.Restaurants.FirstOrDefault(x => x.Name == restaurantDto.Name);
-
-        // if (restaurant != null) return BadRequest("Restaurant with this name already exists");
-
         var restaurant = mapper.Map<Restaurant>(restaurantDto);
 
         restaurant.Owner = User.Identity.Name;
@@ -41,7 +52,7 @@ public class RestaurantsController(RestaurantDbContext context, IMapper mapper) 
 
         var newRestaurant = mapper.Map<RestaurantDto>(restaurant);
 
-        // await publishEndpoint.Publish(mapper.Map<RestaurantCreatedAndUpdated>(newRestaurant));
+        await publishEndpoint.Publish(mapper.Map<RestaurantCreated>(newRestaurant));
 
         var result = await context.SaveChangesAsync() > 0;
 
@@ -65,7 +76,7 @@ public class RestaurantsController(RestaurantDbContext context, IMapper mapper) 
         restaurant.Address = restaurantDto.Address;
         restaurant.PhoneNumber = restaurantDto.PhoneNumber;
 
-        // await publishEndpoint.Publish(mapper.Map<RestaurantCreatedAndUpdated>(restaurant));
+        await publishEndpoint.Publish(mapper.Map<RestaurantUpdated>(restaurant));
 
         var result = await context.SaveChangesAsync() > 0;
 
@@ -86,7 +97,7 @@ public class RestaurantsController(RestaurantDbContext context, IMapper mapper) 
 
         context.Restaurants.Remove(restaurant);
 
-        // await publishEndpoint.Publish<RestaurantDeleted>(new { Id = id.ToString() });
+        await publishEndpoint.Publish<RestaurantDeleted>(new { Id = id.ToString() });
 
         var result = await context.SaveChangesAsync() > 0;
 

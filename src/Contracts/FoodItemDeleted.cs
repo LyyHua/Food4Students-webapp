@@ -2,7 +2,7 @@ using System;
 
 namespace Contracts;
 
-public class RestaurantCreatedAndUpdated
+public class FoodItemDeleted
 {
 
 }

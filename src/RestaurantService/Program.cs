@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -12,6 +13,29 @@ builder.Services.AddDbContext<RestaurantDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddMassTransit(x =>
+{
+    x.AddEntityFrameworkOutbox<RestaurantDbContext>(o =>
+    {
+        o.QueryDelay = TimeSpan.FromSeconds(10);
+
+        o.UsePostgres();
+        o.UseBusOutbox();
+    });
+
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("restaurant", false));
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration["RabbitMq:Host"], "/", h =>
+        {
+            h.Username(builder.Configuration.GetValue("RabbitMQ:Username", "guest")!);
+            h.Password(builder.Configuration.GetValue("RabbitMQ:Password", "guest")!);
+        });
+        
+        cfg.ConfigureEndpoints(context);
+    });
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -31,4 +55,5 @@ var retryPolicy = Policy
     .Handle<NpgsqlException>()
     .WaitAndRetry(5, retryAttemp => TimeSpan.FromSeconds(5));
 
+retryPolicy.ExecuteAndCapture(() => DbInitializer.InitDb(app));
 app.Run();

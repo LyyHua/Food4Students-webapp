@@ -12,7 +12,7 @@ public static class Config
 
     public static IEnumerable<ApiScope> ApiScopes =>
         [
-            new ApiScope("auctionApp", "Auction app full access"),
+            new ApiScope("Food4StudentsApp", "Food4Students app full access"),
         ];
 
     public static IEnumerable<Client> Clients(IConfiguration config) =>
@@ -21,7 +21,7 @@ public static class Config
             {
                 ClientId = "postman",
                 ClientName = "Postman",
-                AllowedScopes = {"openid", "profile", "auctionApp"},
+                AllowedScopes = {"openid", "profile", "Food4StudentsApp"},
                 RedirectUris = {"https://www.getpostman.com/oauth2/callback"},
                 ClientSecrets = [new Secret("NotASecret".Sha256())],
                 AllowedGrantTypes = {GrantType.ResourceOwnerPassword}
@@ -35,7 +35,7 @@ public static class Config
                 RequirePkce = false,
                 RedirectUris = {config["ClientApp"] + "/api/auth/callback/id-server"},
                 AllowOfflineAccess = true,
-                AllowedScopes = {"openid", "profile", "auctionApp"},
+                AllowedScopes = {"openid", "profile", "Food4StudentsApp"},
                 AccessTokenLifetime = 3600*24*30,
                 AlwaysIncludeUserClaimsInIdToken = true
             }
