@@ -10,6 +10,10 @@ So i will deadass drop the godot game and do this project instead
 
 This is the web app microservice version for our original android Food4Students app
 
+# Log 4
+
+This is a fucking lot to config and i mean a fucking lot (not this commit tho since it just 2 file changes)
+
 # Log 3
 
 I don't actually give af about the restaurant id tie to userid tho like just make them unique. Fuck the id stuff.

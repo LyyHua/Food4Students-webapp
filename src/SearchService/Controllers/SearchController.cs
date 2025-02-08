@@ -45,4 +45,12 @@ public class SearchController : ControllerBase
             totalCount = result.TotalCount
         });
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Restaurant>> GetRestaurant(string id)
+    {
+        var restaurant = await DB.Find<Restaurant>().OneAsync(id);
+        if (restaurant == null) return NotFound();
+        return Ok(restaurant);
+    }
 }
