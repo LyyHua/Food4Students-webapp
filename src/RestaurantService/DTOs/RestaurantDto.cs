@@ -1,6 +1,3 @@
-using System;
-using RestaurantService.Entities;
-
 namespace RestaurantService.DTOs;
 
 public class RestaurantDto
@@ -9,6 +6,7 @@ public class RestaurantDto
     public string Owner { get; set; }
     public string Status { get; set; }
     public List<FoodCategoryDto> FoodCategories { get; set; }
+    public DateTime CreatedAt { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public string Address { get; set; }

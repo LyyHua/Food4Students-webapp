@@ -77,12 +77,7 @@ public class DbInitializer
                 Id = Guid.Parse("ff6fe205-c3cb-4878-b777-e48e693bda33"),
                 Name = "Trà Sữa Đào Phô Mai Đào",
                 BasePrice = 45000,
-                Photo = new Photo
-                {
-                    Id = 1000,
-                    Url = "https://maycha.com.vn/wp-content/uploads/2025/01/TS-Dao-PM-Dao-768x768.png",
-                    PublicId = "tra_sua_dao_pho_mai_dao"
-                },
+                PhotoUrl = "https://maycha.com.vn/wp-content/uploads/2025/01/TS-Dao-PM-Dao-768x768.png",
                 Description = "Sự hòa quyện giữa Trà Olong ngọt dịu và nước ép đào tươi giòn mọng, thêm topping Phô Mai Đào ngọt thanh béo ngậy ngon vượt trên kỳ vọng",
                 Variations = variations,
                 FoodCategoryId = Guid.Parse("d7058196-0112-4d97-9f0c-6604e1dff369")
@@ -91,12 +86,7 @@ public class DbInitializer
                 Id = Guid.Parse("3cc5d9cb-f55b-4b9b-9c9f-f54df00a503c"),
                 Name = "Trà Sữa Trân Châu Trắng",
                 BasePrice = 35000,
-                Photo = new Photo
-                {
-                    Id = 4,
-                    Url = "https://cdn.tgdd.vn/Files/2020/06/10/1265792/tra-sua-tran-chau-trang-800x450.jpg",
-                    PublicId = "tra_sua_tran_chau_trang"
-                },
+                PhotoUrl = "https://cdn.tgdd.vn/Files/2020/06/10/1265792/tra-sua-tran-chau-trang-800x450.jpg",
                 Description = "Trà sữa trân châu trắng là một trong những loại trà sữa được ưa chuộng nhất hiện nay. Với hương vị thơm ngon, hấp dẫn, trà sữa trân châu trắng đã trở thành một trong những thức uống được nhiều người yêu thích.",
                 FoodCategoryId = Guid.Parse("d7058196-0112-4d97-9f0c-6604e1dff369")
             }
@@ -122,18 +112,8 @@ public class DbInitializer
                 Address = "47B Phan Huy Ích",
                 PhoneNumber = "0123456789",
                 Description = "Trà Sữa MayCha là một trong những thương hiệu trà sữa “top of mind” của giới trẻ với những sản phẩm chất lượng, sáng tạo và giá cả hợp lý. Với phương châm “Hạnh phúc trong từng lần hút”, MayCha luôn không ngừng phát triển để trao tận tay khách hàng sản phẩm ngon nhất cũng như những giá trị hạnh phúc khi thưởng thức trà sữa tại MayCha.",
-                Logo = new Photo
-                {
-                    Id = 1,
-                    Url = "https://static.ybox.vn/2023/6/2/1686035147740-348235363_1612468545939577_6728433341266735944_n.jpg",
-                    PublicId = "maycha_logo"
-                },
-                Banner = new Photo
-                {
-                    Id = 2,
-                    Url = "https://mms.img.susercontent.com/vn-11134513-7ras8-m38rifvrt5nw1e@resize_ss1242x600!@crop_w1242_h600_cT",
-                    PublicId = "maycha_banner"
-                },
+                LogoUrl = "https://static.ybox.vn/2023/6/2/1686035147740-348235363_1612468545939577_6728433341266735944_n.jpg",
+                BannerUrl = "https://mms.img.susercontent.com/vn-11134513-7ras8-m38rifvrt5nw1e@resize_ss1242x600!@crop_w1242_h600_cT",
                 TotalRating = 2487,
                 AverageRating = 4.7,
                 FoodCategories = foodCategories,

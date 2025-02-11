@@ -1,6 +1,6 @@
-namespace SearchService.Models;
+namespace Contracts;
 
-public class VariationOption
+public class VariationOptionUpdated
 {
     public string Id { get; set; }
     public int PriceAdjustment { get; set; }

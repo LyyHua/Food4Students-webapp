@@ -10,6 +10,22 @@ So i will deadass drop the godot game and do this project instead
 
 This is the web app microservice version for our original android Food4Students app
 
+# Log 6
+
+There's was a teeny tiny bug about syncing between the RestaurantService and SearchService
+
+which then turn into DbUpdateConcurrencyException which then turn into the SearchService not sync
+
+But basically in short it fucked me up for hours but hey it work now
+
+# Log 5
+
+For those asking where tf have i been these 3 days. Welp i just spend 21 hours beating pokemon legends arceus
+
+The game is good and worth it btw. Also leave some note here to do add later
+
+Confirm the 
+
 # Log 4
 
 This is a fucking lot to config and i mean a fucking lot (not this commit tho since it just 2 file changes)

@@ -10,6 +10,15 @@ public class MappingProfiles : Profile
     public MappingProfiles()
     {
         CreateMap<RestaurantCreated, Restaurant>();
+
         CreateMap<RestaurantUpdated, Restaurant>();
+
+        CreateMap<FoodCategoryUpdated, FoodCategory>();
+
+        CreateMap<FoodItemUpdated, FoodItem>();
+
+        CreateMap<VariationUpdated, Variation>();
+
+        CreateMap<VariationOptionUpdated, VariationOption>();
     }
 }
