@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Contracts;
@@ -6,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantService.Data;
-using RestaurantService.Data.Migrations;
 using RestaurantService.DTOs;
 using RestaurantService.Entities;
 
@@ -43,7 +43,7 @@ public class RestaurantsController(RestaurantDbContext context,
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Restaurant>> CreateRestaurant(CreateAndUpdateRestaurantDto restaurantDto)
+    public async Task<ActionResult<Restaurant>> CreateRestaurant(CreateRestaurantDto restaurantDto)
     {
         var restaurant = mapper.Map<Restaurant>(restaurantDto);
 
@@ -64,18 +64,20 @@ public class RestaurantsController(RestaurantDbContext context,
 
     [Authorize]
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateRestaurant(Guid id, CreateAndUpdateRestaurantDto restaurantDto)
+    public async Task<ActionResult> UpdateRestaurant(Guid id, CreateRestaurantDto restaurantDto)
     {
-        var restaurant = await context.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
+        var restaurant = await context.Restaurants.FindAsync(id);
 
         if (restaurant == null) return NotFound();
 
         if (restaurant.Owner != User.Identity.Name) return Forbid();
 
-        restaurant.Name = restaurantDto.Name;
-        restaurant.Description = restaurantDto.Description;
-        restaurant.Address = restaurantDto.Address;
-        restaurant.PhoneNumber = restaurantDto.PhoneNumber;
+        restaurant.Name = restaurantDto.Name ?? restaurant.Name;
+        restaurant.Description = restaurantDto.Description ?? restaurant.Description;
+        restaurant.Address = restaurantDto.Address ?? restaurant.Address;
+        restaurant.PhoneNumber = restaurantDto.PhoneNumber ?? restaurant.PhoneNumber;
+        restaurant.LogoUrl = restaurantDto.LogoUrl ?? restaurant.LogoUrl;
+        restaurant.BannerUrl = restaurantDto.BannerUrl ?? restaurant.BannerUrl;
 
         await publishEndpoint.Publish(mapper.Map<RestaurantUpdated>(restaurant));
 
@@ -99,6 +101,33 @@ public class RestaurantsController(RestaurantDbContext context,
         context.Restaurants.Remove(restaurant);
 
         await publishEndpoint.Publish<RestaurantDeleted>(new { Id = id.ToString() });
+
+        var result = await context.SaveChangesAsync() > 0;
+
+        if (!result) return BadRequest("Could not update DB");
+
+        return Ok();
+    }
+
+    [Authorize]
+    [HttpPatch("{id}")]
+    public async Task<ActionResult> ApproveRestaurant(Guid id)
+    {
+        var restaurant = await context.Restaurants.FindAsync(id);
+
+        if (restaurant == null) return NotFound();
+
+        if (User.Identity.Name != "LyHua") return Forbid();
+
+        restaurant.Status = Status.Approved;
+
+        var updatedRestaurantStatus = new StatusUpdated
+        {
+            Id = restaurant.Id.ToString(),
+            Status = restaurant.Status.ToString()
+        };
+
+        await publishEndpoint.Publish(updatedRestaurantStatus);
 
         var result = await context.SaveChangesAsync() > 0;
 
@@ -340,20 +369,18 @@ public class RestaurantsController(RestaurantDbContext context,
             }
         }
 
-        // Debug log states if needed
-        foreach (var entry in context.ChangeTracker.Entries())
-        {
-            Console.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}");
-        }
-
-        await publishEndpoint.Publish(mapper.Map<RestaurantUpdated>(restaurant));
-
         // Save changes
         var result = await context.SaveChangesAsync() > 0;
         if (!result)
             return BadRequest("Could not save changes to the database");
 
-        // Publish event after saving
+        restaurant.Owner = User.Identity.Name;
+
+        await publishEndpoint.Publish(mapper.Map<MenuUpdated>(restaurant));
+
+        var result2 = await context.SaveChangesAsync() > 0;
+        if (!result2)
+            return BadRequest("Could not save changes to the database");
 
         return Ok(mapper.Map<RestaurantDto>(restaurant));
     }

@@ -20,5 +20,7 @@ public class MappingProfiles : Profile
         CreateMap<VariationUpdated, Variation>();
 
         CreateMap<VariationOptionUpdated, VariationOption>();
+
+        CreateMap<MenuUpdated, Restaurant>();
     }
 }

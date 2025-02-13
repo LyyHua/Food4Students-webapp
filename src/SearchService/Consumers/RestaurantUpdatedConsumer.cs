@@ -16,10 +16,11 @@ public class RestaurantUpdatedConsumer(IMapper mapper) : IConsumer<RestaurantUpd
         var restaurant = mapper.Map<Restaurant>(context.Message);
 
         var result = await DB.Update<Restaurant>()
-            .Match(r => r.ID == restaurant.ID)
-            .ModifyOnly(i => new { i.Name, i.Address, i.Description, i.PhoneNumber }, restaurant)
+            .Match(i => i.ID == context.Message.Id)
+            .ModifyOnly(i => new { i.Name, i.Address, i.Description, i.PhoneNumber, i.LogoUrl, i.BannerUrl }, restaurant)
             .ExecuteAsync();
 
-        await restaurant.SaveAsync();
+        if (!result.IsAcknowledged)
+            throw new MessageException(typeof(RestaurantUpdated), "Problem updating mongoDb");
     }
 }

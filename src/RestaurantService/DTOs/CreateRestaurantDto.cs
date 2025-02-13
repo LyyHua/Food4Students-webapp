@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantService.DTOs;
 
-public class CreateAndUpdateRestaurantDto
+public class CreateRestaurantDto
 {
     [Required] public string Name { get; set; }
     [Required] public string Address { get; set; }

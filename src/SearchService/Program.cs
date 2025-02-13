@@ -20,6 +20,8 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumersFromNamespaceContaining<RestaurantCreatedConsumer>();
     x.AddConsumersFromNamespaceContaining<RestaurantUpdatedConsumer>();
     x.AddConsumersFromNamespaceContaining<RestaurantDeletedConsumer>();
+    x.AddConsumersFromNamespaceContaining<MenuUpdatedConsumer>();
+    x.AddConsumersFromNamespaceContaining<RestaurantStatusUpdatedConsumer>();
 
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
 
@@ -50,6 +52,20 @@ builder.Services.AddMassTransit(x =>
             e.UseMessageRetry(r => r.Interval(5, 5));
 
             e.ConfigureConsumer<RestaurantDeletedConsumer>(context);
+        });
+
+        cfg.ReceiveEndpoint("search-restaurant-menu-updated", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(5, 5));
+
+            e.ConfigureConsumer<MenuUpdatedConsumer>(context);
+        });
+
+        cfg.ReceiveEndpoint("search-restaurant-status-updated", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(5, 5));
+
+            e.ConfigureConsumer<RestaurantStatusUpdatedConsumer>(context);
         });
 
         cfg.ConfigureEndpoints(context);

@@ -14,10 +14,9 @@ public class MappingProfiles : Profile
         CreateMap<FoodItem, FoodItemDto>();
         CreateMap<Variation, VariationDto>();
         CreateMap<VariationOption, VariationOptionDto>();
-        CreateMap<CreateAndUpdateRestaurantDto, Restaurant>();
+        CreateMap<CreateRestaurantDto, Restaurant>();
         CreateMap<RestaurantDto, RestaurantCreated>();
-        CreateMap<Restaurant, RestaurantUpdated>()
-            .ForMember(dest => dest.FoodCategories, opt => opt.MapFrom(src => src.FoodCategories));
+        CreateMap<Restaurant, RestaurantUpdated>();
         CreateMap<CreateFoodCategoryDto, FoodCategory>();
         CreateMap<CreateFoodItemDto, FoodItem>();
         CreateMap<CreateVariationDto, Variation>();
@@ -26,7 +25,15 @@ public class MappingProfiles : Profile
         CreateMap<FoodItemDto, FoodItem>();
         CreateMap<VariationDto, Variation>();
         CreateMap<VariationOptionDto, VariationOption>();
-        
+
+        CreateMap<FoodCategoryDto, FoodCategoryUpdated>();
+        CreateMap<FoodItemDto, FoodItemUpdated>();
+        CreateMap<VariationDto, VariationUpdated>();
+        CreateMap<VariationOptionDto, VariationOptionUpdated>();
+
+        CreateMap<RestaurantDto, MenuUpdated>();
+        CreateMap<Restaurant, MenuUpdated>();
+
         CreateMap<FoodCategory, FoodCategoryUpdated>();
         CreateMap<FoodItem, FoodItemUpdated>();
         CreateMap<Variation, VariationUpdated>();
