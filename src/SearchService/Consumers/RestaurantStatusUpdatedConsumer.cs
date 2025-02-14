@@ -6,9 +6,9 @@ using SearchService.Models;
 
 namespace SearchService.Consumers;
 
-public class RestaurantStatusUpdatedConsumer : IConsumer<StatusUpdated>
+public class RestaurantStatusUpdatedConsumer : IConsumer<RestaurantStatusUpdated>
 {
-    public async Task Consume(ConsumeContext<StatusUpdated> context)
+    public async Task Consume(ConsumeContext<RestaurantStatusUpdated> context)
     {
         Console.WriteLine("--> Consuming restaurant status updated: " + context.Message.Id);
 

@@ -18,10 +18,6 @@ builder.Services.AddHttpClient<RestaurantSvcHttpClient>().AddPolicyHandler(GetPo
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumersFromNamespaceContaining<RestaurantCreatedConsumer>();
-    x.AddConsumersFromNamespaceContaining<RestaurantUpdatedConsumer>();
-    x.AddConsumersFromNamespaceContaining<RestaurantDeletedConsumer>();
-    x.AddConsumersFromNamespaceContaining<MenuUpdatedConsumer>();
-    x.AddConsumersFromNamespaceContaining<RestaurantStatusUpdatedConsumer>();
 
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
 
@@ -38,34 +34,6 @@ builder.Services.AddMassTransit(x =>
             e.UseMessageRetry(r => r.Interval(5, 5));
 
             e.ConfigureConsumer<RestaurantCreatedConsumer>(context);
-        });
-
-        cfg.ReceiveEndpoint("search-restaurant-updated", e =>
-        {
-            e.UseMessageRetry(r => r.Interval(5, 5));
-
-            e.ConfigureConsumer<RestaurantUpdatedConsumer>(context);
-        });
-
-        cfg.ReceiveEndpoint("search-restaurant-deleted", e =>
-        {
-            e.UseMessageRetry(r => r.Interval(5, 5));
-
-            e.ConfigureConsumer<RestaurantDeletedConsumer>(context);
-        });
-
-        cfg.ReceiveEndpoint("search-restaurant-menu-updated", e =>
-        {
-            e.UseMessageRetry(r => r.Interval(5, 5));
-
-            e.ConfigureConsumer<MenuUpdatedConsumer>(context);
-        });
-
-        cfg.ReceiveEndpoint("search-restaurant-status-updated", e =>
-        {
-            e.UseMessageRetry(r => r.Interval(5, 5));
-
-            e.ConfigureConsumer<RestaurantStatusUpdatedConsumer>(context);
         });
 
         cfg.ConfigureEndpoints(context);
@@ -92,3 +60,5 @@ static IAsyncPolicy<HttpResponseMessage> GetPolicy()
         .HandleTransientHttpError()
         .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
         .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(3));
+
+public partial class Program {}

@@ -121,7 +121,7 @@ public class RestaurantsController(RestaurantDbContext context,
 
         restaurant.Status = Status.Approved;
 
-        var updatedRestaurantStatus = new StatusUpdated
+        var updatedRestaurantStatus = new RestaurantStatusUpdated
         {
             Id = restaurant.Id.ToString(),
             Status = restaurant.Status.ToString()

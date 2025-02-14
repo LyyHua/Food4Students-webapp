@@ -1,6 +1,6 @@
 namespace Contracts;
 
-public class StatusUpdated
+public class RestaurantStatusUpdated
 {
     public string Id { get; set; }
     public string Status { get; set; }
