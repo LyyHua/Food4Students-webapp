@@ -6,8 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumersFromNamespaceContaining<OrderPlacedConsumer>();
-    x.AddConsumersFromNamespaceContaining<OrderFinishedConsumer>();
-    x.AddConsumersFromNamespaceContaining<OrderStatusUpdatedConsumer>();
 
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("nt", false));
 

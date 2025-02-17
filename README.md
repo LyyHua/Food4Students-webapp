@@ -25,6 +25,12 @@ So i will deadass drop the godot game and do this project instead
 
 This is the web app microservice version for our original android Food4Students app
 
+### Log 8
+
+Which fucker think it is a great idea in order to use a css library you need to fucking config the tailwind.config.ts
+
+I hope you get hit by a truck. It took me fucking 3 hours just to know why my fucking button doesn't appear or have an outline
+
 ### Log 7
 
 I have fixed all the bug of the sync between restaurant and search service and all it cost is my sanity.

@@ -11,12 +11,10 @@ COPY src/GatewayService/GatewayService.csproj src/GatewayService/GatewayService.
 COPY src/OrderService/OrderService.csproj src/OrderService/OrderService.csproj
 COPY src/NotificationService/NotificationService.csproj src/NotificationService/NotificationService.csproj
 COPY src/IdentityService/IdentityService.csproj src/IdentityService/IdentityService.csproj
-COPY src/RatingService/RatingService.csproj src/RatingService/RatingService.csproj
-COPY src/FavoriteService/FavoriteService.csproj src/FavoriteService/FavoriteService.csproj
 COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj
 
 # Restore package deps
-RUN dotnet restore Carsties.sln
+RUN dotnet restore Food4Student-webapp.sln
 
 # Copy the app folders over
 COPY src/NotificationService src/NotificationService

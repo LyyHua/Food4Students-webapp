@@ -110,27 +110,52 @@ public class RestaurantsController(RestaurantDbContext context,
     }
 
     [Authorize]
-    [HttpPatch("{id}")]
-    public async Task<ActionResult> ApproveRestaurant(Guid id)
+    [HttpPatch]
+    public async Task<ActionResult> ChangeRestaurantState(string id, string state)
     {
-        var restaurant = await context.Restaurants.FindAsync(id);
-
+        var restaurant = await context.Restaurants.FindAsync(Guid.Parse(id));
         if (restaurant == null) return NotFound();
 
-        if (User.Identity.Name != "LyHua") return Forbid();
+        if (!Enum.TryParse<Status>(state, true, out var newStatus))
+            return BadRequest("Invalid status value.");
 
-        restaurant.Status = Status.Approved;
+        var currentStatus = restaurant.Status;
 
+        if (User.Identity.Name == "LyHua")
+        {
+            if (newStatus is Status.Approved || newStatus is Status.Banned || newStatus is Status.Suspended)
+                restaurant.Status = newStatus;
+            else
+                return BadRequest("Are you high mate");
+        }
+        else
+        {
+            if (newStatus is Status.Open)
+            {
+                if (currentStatus != Status.Approved && currentStatus != Status.Closed)
+                    return BadRequest("You can only open a restaurant if it is Approved or Closed.");
+            }
+            else if (newStatus is Status.Closed)
+            {
+                if (currentStatus != Status.Approved && currentStatus != Status.Open)
+                    return BadRequest("You can only close a restaurant if it is Approved or Open.");
+            }
+            else
+                return Forbid("Only the admin can set this status.");
+
+            restaurant.Status = newStatus;
+        }
+
+        // Publish status update
         var updatedRestaurantStatus = new RestaurantStatusUpdated
         {
             Id = restaurant.Id.ToString(),
             Status = restaurant.Status.ToString()
         };
-
         await publishEndpoint.Publish(updatedRestaurantStatus);
 
+        // Update database
         var result = await context.SaveChangesAsync() > 0;
-
         if (!result) return BadRequest("Could not update DB");
 
         return Ok();

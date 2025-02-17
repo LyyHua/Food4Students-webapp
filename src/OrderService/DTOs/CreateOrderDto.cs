@@ -13,5 +13,4 @@ public class CreateOrderDto
     public required string PhoneNumber { get; set; }
     public string Name { get; set; }
     public string Note { get; set; }
-    public required string RestaurantId { get; set; }
 }

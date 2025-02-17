@@ -1,6 +1,3 @@
-using System;
-using MongoDB.Entities;
-
 namespace OrderService.Models;
 
 public class OrderItem

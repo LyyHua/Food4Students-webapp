@@ -15,18 +15,25 @@ public class OrdersController(IMapper mapper, IPublishEndpoint publishEndpoint) 
 {
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<FoodOrder>> PlaceOrder(CreateOrderDto createOrderDto)
+    public async Task<ActionResult<FoodOrder>> PlaceOrder(string restaurantId, CreateOrderDto createOrderDto)
     {
-        var restaurant = await DB.Find<Restaurant>().OneAsync(createOrderDto.RestaurantId);
+        var restaurant = await DB.Find<Restaurant>().OneAsync(restaurantId);
 
         if (restaurant is null) return NotFound("Restaurant not found");
 
-        if (restaurant.Status != "Approved" && restaurant.Status != "Open")
-            return BadRequest("Cannot place order for unapproved restaurant.");
+        if (restaurant.Status == "Pending")
+            return BadRequest("Cannot place order for pending restaurant.");
+
+        if (restaurant.Status != "Open")
+            return BadRequest("Cannot place order for closed restaurant.");
+
+        if (restaurant.Owner == User.Identity.Name)
+            return BadRequest("Cannot place order for own restaurant.");
 
         var order = mapper.Map<FoodOrder>(createOrderDto);
         order.Name ??= User.Identity.Name;
-        order.RestaurantId = createOrderDto.RestaurantId;
+        order.RestaurantId = restaurantId;
+        order.Orderer = User.Identity.Name;
         order.OrderItems = [];
 
         // Process each order item in the DTO.
@@ -135,7 +142,7 @@ public class OrdersController(IMapper mapper, IPublishEndpoint publishEndpoint) 
     public async Task<ActionResult<List<FoodOrder>>> GetUserOrders()
     {
         var orders = await DB.Find<FoodOrder>()
-            .Match(x => x.Name == User.Identity.Name)
+            .Match(x => x.Orderer == User.Identity.Name)
             .Sort(x => x.Descending(y => y.CreatedAt))
             .ExecuteAsync();
 
@@ -153,138 +160,69 @@ public class OrdersController(IMapper mapper, IPublishEndpoint publishEndpoint) 
 
         return Ok(orders);
     }
-    // I will uncomment this if i EVER allow the user to delete their order
-    /*
-        [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteOrder(string id)
+
+    [Authorize]
+    [HttpPatch]
+    public async Task<ActionResult> ChangeOrderStatus(string id, string newStatus)
+    {
+        var order = await DB.Find<FoodOrder>()
+            .MatchID(id)
+            .ExecuteFirstAsync();
+        if (order is null) return NotFound();
+
+        var restaurant = await DB.Find<Restaurant>().OneAsync(order.RestaurantId);
+        if (restaurant is null) return NotFound();
+
+        if (restaurant.Owner != User.Identity.Name)
+            return Unauthorized();
+
+        if (!Enum.TryParse<OrderStatus>(newStatus, true, out var desiredStatus))
+            return BadRequest("Invalid order status.");
+
+        bool isOwner = restaurant.Owner == User.Identity.Name;
+        bool isOrderer = order.Orderer == User.Identity.Name;
+
+        if (isOwner)
         {
-            var order = await DB.Find<FoodOrder>()
-                .MatchID(id)
-                .ExecuteFirstAsync();
-
-            if (order is null) return NotFound();
-
-            if (order.Name != User.Identity.Name)
-                return Unauthorized();
-
-            if (order.OrderStatus != OrderStatus.Pending)
-                return BadRequest("Cannot delete order that is not pending.");
-
-            await DB.DeleteAsync<FoodOrder>(id);
-
-            await publishEndpoint.Publish(mapper.Map<OrderDeleted>(order));
-
-            return NoContent();
+            switch (desiredStatus)
+            {
+                case OrderStatus.Accepted:
+                    if (order.OrderStatus != OrderStatus.Pending)
+                        return BadRequest("You can only accept a pending order.");
+                    order.OrderStatus = OrderStatus.Accepted;
+                    break;
+                case OrderStatus.Delivering:
+                    if (order.OrderStatus != OrderStatus.Accepted)
+                        return BadRequest("You can only deliver an accepted order.");
+                    order.OrderStatus = OrderStatus.Delivering;
+                    break;
+                default:
+                    return BadRequest("This transition is not supported for the owner.");
+            }
         }
-    */
-    [Authorize]
-    [HttpPatch("{id}/accept")]
-    public async Task<ActionResult> AcceptOrder(string id)
-    {
-        var order = await DB.Find<FoodOrder>()
-            .MatchID(id)
-            .ExecuteFirstAsync();
-
-        var restaurant = await DB.Find<Restaurant>().OneAsync(order.RestaurantId);
-
-        if (order is null) return NotFound();
-
-        if (restaurant.Owner != User.Identity.Name)
+        else if (isOrderer)
+        {
+            switch (desiredStatus)
+            {
+                case OrderStatus.Finished:
+                    if (order.OrderStatus != OrderStatus.Delivering)
+                        return BadRequest("You can only finish a delivering order.");
+                    order.OrderStatus = OrderStatus.Finished;
+                    break;
+                case OrderStatus.Rejected:
+                    if (order.OrderStatus != OrderStatus.Pending)
+                        return BadRequest("You can only reject a pending order.");
+                    order.OrderStatus = OrderStatus.Rejected;
+                    break;
+                default:
+                    return BadRequest("This transition is not supported for the orderer.");
+            }
+        }
+        else
             return Unauthorized();
 
-        if (order.OrderStatus != OrderStatus.Pending)
-            return BadRequest("Cannot update status of order that is not pending.");
-
-        order.OrderStatus = OrderStatus.Accepted;
-
         await DB.SaveAsync(order);
-
-        await publishEndpoint.Publish(mapper.Map<OrderAccepted>(order));
-
-        return NoContent();
-    }
-
-    [Authorize]
-    [HttpPatch("{id}/reject")]
-    public async Task<ActionResult> RejectOrder(string id)
-    {
-        var order = await DB.Find<FoodOrder>()
-            .MatchID(id)
-            .ExecuteFirstAsync();
-
-        var restaurant = await DB.Find<Restaurant>().OneAsync(order.RestaurantId);
-
-        if (order is null) return NotFound();
-
-        if (restaurant.Owner != User.Identity.Name)
-            return Unauthorized();
-
-        if (order.OrderStatus != OrderStatus.Pending)
-            return BadRequest("Cannot update status of order that is not pending.");
-
-        order.OrderStatus = OrderStatus.Rejected;
-
-        await DB.SaveAsync(order);
-
-        await publishEndpoint.Publish(mapper.Map<OrderRejected>(order));
-
-        return NoContent();
-    }
-
-    [Authorize]
-    [HttpPatch("{id}/deliver")]
-    public async Task<ActionResult> DeliverOrder(string id)
-    {
-        var order = await DB.Find<FoodOrder>()
-            .MatchID(id)
-            .ExecuteFirstAsync();
-
-        var restaurant = await DB.Find<Restaurant>().OneAsync(order.RestaurantId);
-
-        if (order is null) return NotFound();
-
-        if (restaurant.Owner != User.Identity.Name)
-            return Unauthorized();
-
-        if (order.OrderStatus != OrderStatus.Accepted)
-            return BadRequest("Cannot update status of order that is not accepted.");
-
-        order.OrderStatus = OrderStatus.Delivering;
-
-        await DB.SaveAsync(order);
-
-        await publishEndpoint.Publish(mapper.Map<OrderDelivering>(order));
-
-        return NoContent();
-    }
-
-    [Authorize]
-    [HttpPatch("{id}/complete")]
-    public async Task<ActionResult> FinishOrder(string id)
-    {
-        var order = await DB.Find<FoodOrder>()
-            .MatchID(id)
-            .ExecuteFirstAsync();
-
-        var restaurant = await DB.Find<Restaurant>().OneAsync(order.RestaurantId);
-
-        if (order is null) return NotFound();
-
-        if (restaurant.Owner != User.Identity.Name)
-            return Unauthorized();
-        
-        // Some day in the future. Order can only be set to finished by the user
-        // Or after 20 days count down from the day the order was placed it can be set to finished
-
-        if (order.OrderStatus != OrderStatus.Delivering)
-            return BadRequest("Cannot update status of order that is not delivering.");
-
-        order.OrderStatus = OrderStatus.Finished;
-
-        await DB.SaveAsync(order);
-
-        await publishEndpoint.Publish(mapper.Map<OrderFinished>(order));
+        await publishEndpoint.Publish(mapper.Map<OrderStatusUpdated>(order));
 
         return NoContent();
     }

@@ -20,11 +20,7 @@ public class MappingProfiles : Profile
         CreateMap<CreateOrderDto, FoodOrder>();
         CreateMap<CreateOrderItemDto, OrderItem>();
         CreateMap<FoodOrder, OrderPlaced>();
-        CreateMap<FoodOrder, OrderFinished>();
         CreateMap<FoodOrder, OrderStatusUpdated>();
-        CreateMap<FoodOrder, OrderAccepted>();
-        CreateMap<FoodOrder, OrderRejected>();
-        CreateMap<FoodOrder, OrderDelivering>();
-        CreateMap<FoodOrder, OrderFinished>();
+        CreateMap<OrderItem, OrderItemUpdated>();
     }
 }

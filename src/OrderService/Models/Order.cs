@@ -10,6 +10,7 @@ public class FoodOrder : Entity
     public required string ShippingAddress { get; set; }
     public required string PhoneNumber { get; set; }
     public required string Name { get; set; }
+    public required string Orderer { get; set; }
     public string Note { get; set; }
     public int TotalPrice { get; set; }
     public string RestaurantId { get; set; }

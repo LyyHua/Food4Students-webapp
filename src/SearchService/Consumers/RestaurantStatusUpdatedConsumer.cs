@@ -12,10 +12,12 @@ public class RestaurantStatusUpdatedConsumer : IConsumer<RestaurantStatusUpdated
     {
         Console.WriteLine("--> Consuming restaurant status updated: " + context.Message.Id);
 
-        var restaurant = await DB.Find<Restaurant>().OneAsync(context.Message.Id);
+        var result = await DB.Update<Restaurant>()
+            .Match(i => i.ID == context.Message.Id)
+            .Modify(i => i.Status, context.Message.Status)
+            .ExecuteAsync();
 
-        restaurant.Status = context.Message.Status;
-
-        await restaurant.SaveAsync();
+        if (!result.IsAcknowledged)
+            throw new MessageException(typeof(RestaurantStatusUpdated), "Problem updating mongoDb");
     }
 }
