@@ -11,7 +11,7 @@ type Props = {
 
 export default function RestaurantCard({restaurant}: Props) {
   return (
-    <Link href={`/auctions/details/${restaurant.id}`}>
+    <Link href={`/restaurants/details/${restaurant.id}`}>
       <div className="relative w-full bg-gray-200 aspect-[16/10] rounded-lg overflow-hidden">
         <RestaurantLogo restaurant={restaurant}/>
         <div className="absolute top-2 right-2">

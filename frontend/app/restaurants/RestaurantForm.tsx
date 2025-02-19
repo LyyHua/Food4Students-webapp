@@ -1,6 +1,6 @@
 'use client'
 
-import { TextInput, Button } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
 import { useForm, FieldValues } from 'react-hook-form';
@@ -54,16 +54,14 @@ export default function RestaurantForm({ restaurant }: Props) {
 
     return (
         <form className='flex flex-col mt-3' onSubmit={handleSubmit(onSubmit)}>
-            <Input label='Name' name='name' control={control} rules={{ required: 'Name is required' }} />
-            <Input label='Address' name='address' control={control} rules={{ required: 'Address is required' }} />
+            <div className="grid grid-cols-2 gap-3">
+                <Input label='Name' name='name' control={control} rules={{ required: 'Name is required' }} />
+                <Input label='Address' name='address' control={control} rules={{ required: 'Address is required' }} />
+            </div>
             <Input label='PhoneNumber' name='phoneNumber' control={control} rules={{ required: 'PhoneNumber is required' }} />
             <Input label='Description' name='description' control={control} />
             <Input label='Logo Image URL' name='logoUrl' control={control} rules={{ required: 'Logo image url is required' }} />
             <Input label='Banner Image URL' name='bannerUrl' control={control} rules={{ required: 'Banner image url is required' }} />
-            <div className="grid grid-cols-2 gap-3">
-                <Input label='Year' name='year' type='number' control={control} rules={{ required: 'Year is required' }} />
-                <Input label='Mileage' name='mileage' control={control} rules={{ required: 'Mileage is required' }} />
-            </div>
 
             <div className="flex justify-between">
                 <Button outline color='gray'>Cancel</Button>

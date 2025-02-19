@@ -11,17 +11,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             id: "id-server",
             clientId: "nextApp",
             clientSecret: "secret",
-            issuer: "process.env.ID_URL",
+            issuer: process.env.ID_URL,
             authorization: {
-                params: { scope: 'openid profile auctionApp' },
+                params: { scope: 'openid profile Food4StudentsApp' },
                 url: process.env.ID_URL + '/connect/authorize'
             },
-            token: {
-                url: `${process.env.ID_URL_INTERNAL}/connect/token`
-            },
-            userinfo: {
-                url: `${process.env.ID_URL_INTERNAL}/connect/token`
-            },
+            // token: {
+            //     url: `${process.env.ID_URL_INTERNAL}/connect/token`
+            // },
+            // userinfo: {
+            //     url: `${process.env.ID_URL_INTERNAL}/connect/token`
+            // },
             idToken: true,
         } as OIDCConfig<Omit<Profile, "username">>),
     ],

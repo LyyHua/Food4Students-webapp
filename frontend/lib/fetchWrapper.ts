@@ -20,7 +20,6 @@ async function post(url: string, body: {}) {
         headers: await getHeaders(),
         body: JSON.stringify(body)
     }
-
     const response = await fetch(baseUrl + url, requestOptions)
 
     return handleResponse(response)
@@ -80,7 +79,7 @@ async function handleResponse(response: Response) {
     try {
         data = text && JSON.parse(text)
     } catch (error) {
-        toast.error(error)
+        // toast.error(error)
         data = text
     }
 

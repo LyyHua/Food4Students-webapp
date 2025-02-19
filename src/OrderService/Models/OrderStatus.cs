@@ -6,6 +6,5 @@ public enum OrderStatus
     Accepted,
     Delivering,
     Finished,
-    Rejected,
-    Cancelled
+    Rejected
 }

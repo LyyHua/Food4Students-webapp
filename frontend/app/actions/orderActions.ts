@@ -1,9 +1,11 @@
+"use server"
+
 import { fetchWrapper } from "@/lib/fetchWrapper"
 import { Order } from "@/types"
 import { FieldValues } from "react-hook-form"
 
-export async function placeOrder(data: FieldValues): Promise<Order> {
-    return await fetchWrapper.post("orders", data)
+export async function placeOrder(id: string, data: FieldValues) {
+    return await fetchWrapper.post(`orders?restaurantId=${id}`, data)
 }
 
 export async function getOrder(id: string): Promise<Order> {
@@ -11,7 +13,8 @@ export async function getOrder(id: string): Promise<Order> {
 }
 
 export async function changeOrderStatus(id: string, state: string) {
-    return await fetchWrapper.patch(`orders?id=${id}&state=${state}`)
+    console.log(`orders?id=${id}&newStatus=${state}`)
+    return await fetchWrapper.patch(`orders?id=${id}&newStatus=${state}`)
 }
 
 export async function getUserOrders(): Promise<Order[]> {

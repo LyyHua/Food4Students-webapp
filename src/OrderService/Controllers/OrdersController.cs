@@ -173,7 +173,7 @@ public class OrdersController(IMapper mapper, IPublishEndpoint publishEndpoint) 
         var restaurant = await DB.Find<Restaurant>().OneAsync(order.RestaurantId);
         if (restaurant is null) return NotFound();
 
-        if (restaurant.Owner != User.Identity.Name)
+        if (restaurant.Owner != User.Identity.Name && order.Orderer != User.Identity.Name)
             return Unauthorized();
 
         if (!Enum.TryParse<OrderStatus>(newStatus, true, out var desiredStatus))

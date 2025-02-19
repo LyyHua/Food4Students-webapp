@@ -1,3 +1,5 @@
+"use server"
+
 import { fetchWrapper } from "@/lib/fetchWrapper"
 import { PagedResult, Rating } from "@/types"
 import { FieldValues } from "react-hook-form"

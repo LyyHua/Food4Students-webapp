@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using AutoMapper;
 using Contracts;
 using MassTransit;

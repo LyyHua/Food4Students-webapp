@@ -8,84 +8,92 @@ const pageSizeButtons = [4, 8, 12]
 
 const orderButtons = [
     {
-        label: 'Alphabetical',
+        label: "Alphabetical",
         icon: AiOutlineSortAscending,
-        value: 'make'
+        value: "make",
     },
     {
-        label: 'Ending soon',
+        label: "End date",
         icon: AiOutlineClockCircle,
-        value: 'endingSoon'
+        value: "endingSoon",
     },
     {
-        label: 'Recently added',
+        label: "Recently added",
         icon: BsFillStopCircleFill,
-        value: 'new'
+        value: "new",
     },
 ]
 
 const filterButtons = [
     {
-        label: 'Live auctions',
+        label: "Live Auctions",
         icon: GiFlame,
-        value: 'live'
+        value: "live",
     },
     {
-        label: 'Ending < 6 hours',
+        label: "Ending < 6 hours",
         icon: GiFinishLine,
-        value: 'endingSoon'
+        value: "endingSoon",
     },
     {
-        label: 'Completed',
+        label: "Completed",
         icon: BsStopwatchFill,
-        value: 'finished'
-    }
+        value: "finished",
+    },
 ]
 
-export default function Filters() { 
-    const pageSize = useParamsStore(state => state.pageSize);
-    const setParams = useParamsStore(state => state.setParams);
-    const orderBy = useParamsStore(state => state.orderBy);
-    const filterBy = useParamsStore(state => state.filterBy);
-
+export default function Filters() {
+    const pageSize = useParamsStore((state) => state.pageSize)
+    const setParams = useParamsStore((state) => state.setParams)
+    const orderBy = useParamsStore((state) => state.orderBy)
+    const filterBy = useParamsStore((state) => state.filterBy)
+    
     return (
-        <div className='flex justify-between items-center mb-4'>
-             <div>
-                <span className='uppercase text-sm text-gray-500 mr-2'>Filter by</span>
+        <div className="flex justify-between items-center mb-4">
+            <div>
+                <span className="uppercase text-sm text-gray-500 mr-2">
+                    Filter by
+                </span>
                 <ButtonGroup>
-                    {filterButtons.map(({label, icon: Icon, value }) => (
-                        <Button key={value} 
-                            onClick={() => setParams({filterBy: value})}
-                            color={`${filterBy === value ? 'red' : 'gray'}`}
+                    {filterButtons.map(({ label, icon: Icon, value }) => (
+                        <Button
+                            key={value}
+                            onClick={() => setParams({ filterBy: value })}
+                            color={`${filterBy === value ? "red" : "gray"}`}
                         >
+                            <Icon className="mr-3 h-4 w-4"/>
                             {label}
                         </Button>
                     ))}
                 </ButtonGroup>
             </div>
             <div>
-                <span className='uppercase text-sm text-gray-500 mr-2'>Order by</span>
-                <Button.Group>
-                    {orderButtons.map(({label, icon: Icon, value}) => (
+                <span className="uppercase text-sm text-gray-500 mr-2">
+                    Order by
+                </span>
+                <ButtonGroup>
+                    {orderButtons.map(({ label, icon: Icon, value }) => (
                         <Button
                             key={value}
-                            onClick={() => setParams({orderBy: value})}
-                            color={`${orderBy === value ? 'red' : 'gray'}`}>
-                            <Icon className='mr-3 h-4 w-4'
-                        />
+                            onClick={() => setParams({ orderBy: value })}
+                            color={`${orderBy === value ? "red" : "gray"}`}
+                        >
+                            <Icon className="mr-3 h-4 w-4"/>
                             {label}
                         </Button>
                     ))}
-                </Button.Group>
+                </ButtonGroup>
             </div>
             <div>
-                <span className='uppercase text-sm text-gray-500 mr-2'>Page Size</span>
+                <span className="uppercase text-sm text-gray-500 mr-2">
+                    Page size
+                </span>
                 <ButtonGroup>
-                    {pageSizeButtons.map((value, i) => (
-                        <Button key={i} onClick={() =>
-                                setParams({pageSize: value})}
-                                color={`${pageSize === value ? 'red' : 'gray'}`}
-                                className='focus:ring-0'
+                    {pageSizeButtons.map((value, index) => (
+                        <Button
+                            key={index}
+                            onClick={() => setParams({ pageSize: value })}
+                            color={`${pageSize === value ? "red" : "gray"}`}
                         >
                             {value}
                         </Button>
@@ -93,5 +101,5 @@ export default function Filters() {
                 </ButtonGroup>
             </div>
         </div>
-    );
+    )
 }
