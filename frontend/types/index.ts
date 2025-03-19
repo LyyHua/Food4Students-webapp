@@ -69,6 +69,8 @@ export type Order = {
     restaurantId: string
     id: string
     orderer: string
+    restaurantName?: string  // Added for UI display
+    restaurantLogo?: string  // Added for UI display
 }
 
 export type OrderItem = {

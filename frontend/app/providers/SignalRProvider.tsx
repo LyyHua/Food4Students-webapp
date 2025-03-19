@@ -19,7 +19,7 @@ type Props = {
 export default function SignalRProvider({children, user, notifyUrl}: Props) {
     const connection = useRef<HubConnection | null>(null)
 
-    const handleOrderStatusChanged = useCallback((order: Order) => {
+    const handleOrderStatusUpdated = useCallback((order: Order) => {
         const foodOrder = getOrder(order.id)
         return toast.promise(foodOrder, {
             loading: 'Loading',
@@ -50,14 +50,14 @@ export default function SignalRProvider({children, user, notifyUrl}: Props) {
         }
 
         connection.current.on('OrderPlaced', handleOrderPlaced)
-        connection.current.on('OrderStatusChanged', handleOrderStatusChanged)
+        connection.current.on('OrderStatusUpdated', handleOrderStatusUpdated)
 
         return () => {
             connection.current?.off('OrderPlaced', handleOrderPlaced)
-            connection.current?.off('OrderStatusChanged', handleOrderStatusChanged)
+            connection.current?.off('OrderStatusUpdated', handleOrderStatusUpdated)
         }
 
-    }, [handleOrderPlaced, handleOrderStatusChanged, notifyUrl])
+    }, [handleOrderPlaced, handleOrderStatusUpdated, notifyUrl])
   return (
     children
   )
