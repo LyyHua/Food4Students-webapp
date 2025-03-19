@@ -86,7 +86,7 @@ public class DbInitializer
                 Id = Guid.Parse("3cc5d9cb-f55b-4b9b-9c9f-f54df00a503c"),
                 Name = "Trà Sữa Trân Châu Trắng",
                 BasePrice = 35000,
-                PhotoUrl = "https://cdn.tgdd.vn/Files/2020/06/10/1265792/tra-sua-tran-chau-trang-800x450.jpg",
+                PhotoUrl = "https://maycha.com.vn/wp-content/uploads/2023/10/tra-sua-tran-chau-trang-1.png",
                 Description = "Trà sữa trân châu trắng là một trong những loại trà sữa được ưa chuộng nhất hiện nay. Với hương vị thơm ngon, hấp dẫn, trà sữa trân châu trắng đã trở thành một trong những thức uống được nhiều người yêu thích.",
                 FoodCategoryId = Guid.Parse("d7058196-0112-4d97-9f0c-6604e1dff369")
             }

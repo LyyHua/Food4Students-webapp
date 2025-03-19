@@ -12,9 +12,9 @@ public class RestaurantSvcHttpClient(HttpClient httpClient, IConfiguration confi
             .Project(x => x.CreatedAt.ToString())
             .ExecuteFirstAsync();
 
-        var auctionURL = config["RestaurantServiceUrl"];
+        var restaurantURL = config["RestaurantServiceUrl"];
 
-        var url = auctionURL + "/api/restaurants";
+        var url = restaurantURL + "/api/restaurants";
 
         if (!string.IsNullOrEmpty(lastUpdated))
         {

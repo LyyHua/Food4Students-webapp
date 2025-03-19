@@ -8,6 +8,7 @@ import { FieldValues, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import Input from "../../../components/Input"
 import { useRouter } from "next/navigation"
+import { Console } from "console"
 
 type Props = {
     id: string
@@ -40,13 +41,13 @@ export default function OrderForm({id}: Props) {
             }))
 
             const orderPayload = {
-                RestaurantId: id,
                 ShippingAddress: data.shippingAddress,
                 PhoneNumber: data.phoneNumber,
                 Note: data.note,
                 OrderItems: orderItems,
             }
 
+            console.log(orderPayload)
             const res = await placeOrder(id, orderPayload)
             const orderId = res.id
             if (res.error) {

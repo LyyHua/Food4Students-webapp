@@ -79,10 +79,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
-      - IssuerUri=https://id.food4students.local
-      - ClientApp=https://app.food4students.local
       - ConnectionStrings__DefaultConnection=Server=postgres;User Id=postgres;Password=postgrespw;Database=identity
-      - VIRTUAL_HOST=id.food4students.local
+    ports:
+      - 5000:80
     depends_on:
       - postgres
   notify-svc:
@@ -106,31 +105,20 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
-      - ClientApp=https://app.food4students.local
-      - VIRTUAL_HOST=api.food4students.local
-  nginx-proxy:
-    image: nginxproxy/nginx-proxy
-    container_name: nginx-proxy
     ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./devcerts:/etc/nginx/certs
-  web-app:
-    image: lyyhua/web-app
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-    volumes:
-      - /var/lib/web/data
-    environment:
-      - AUTH_SECRET="SYCIOQP2K2eKUDxAIBretRvpFd0rrz3LwcIxunux300="
-      - AUTH_URL=https://app.food4students.local
-      - AUTH_URL_INTERNAL=http://web-app:3000
-      - API_URL=http://gateway-svc/
-      - ID_URL=https://id.food4students.local
-      - ID_URL_INTERNAL=http://identity-svc
-      - NOTIFY_URL=https://api.food4students.local/notifications
-      - VIRTUAL_HOST=app.food4students.local
-      - VIRTUAL_PORT=3000
+      - 6001:80
+  # web-app:
+  #   image: lyyhua/web-app
+  #   build:
+  #     context: .
+  #     dockerfile: frontend/Dockerfile
+  #   volumes:
+  #     - /var/lib/web/data
+  #   environment:
+  #     - AUTH_SECRET="SYCIOQP2K2eKUDxAIBretRvpFd0rrz3LwcIxunux300="
+  #     - AUTH_URL=http://localhost:3000
+  #     - AUTH_URL_INTERNAL=http://web-app:3000
+  #     - API_URL=http://gateway-svc/
+  #     - ID_URL=http://localhost:5000
+  #     - ID_URL_INTERNAL=http://identity-svc
+  #     - NOTIFY_URL=http://localhost:6001/notifications

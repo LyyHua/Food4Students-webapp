@@ -15,7 +15,7 @@ public static class Config
             new ApiScope("Food4StudentsApp", "Food4Students app full access"),
         ];
 
-    public static IEnumerable<Client> Clients(IConfiguration config) =>
+    public static IEnumerable<Client> Clients() =>
         [
             new Client
             {
@@ -33,7 +33,7 @@ public static class Config
                 ClientSecrets = {new Secret("secret".Sha256())},
                 AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
                 RequirePkce = false,
-                RedirectUris = {config["ClientApp"] + "/api/auth/callback/id-server"},
+                RedirectUris = {"http://localhost:3000/api/auth/callback/id-server"},
                 AllowOfflineAccess = true,
                 AllowedScopes = {"openid", "profile", "Food4StudentsApp"},
                 AccessTokenLifetime = 3600*24*30,

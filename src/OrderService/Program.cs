@@ -1,4 +1,3 @@
-using Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MongoDB.Driver;
@@ -53,6 +52,5 @@ await Policy.Handle<TimeoutException>()
         await DB.InitAsync("OrderDb", MongoClientSettings
             .FromConnectionString(builder.Configuration.GetConnectionString("OrderDbConnection")));
     });
-
 
 app.Run();
