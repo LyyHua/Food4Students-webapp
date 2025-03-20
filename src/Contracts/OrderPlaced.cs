@@ -4,6 +4,8 @@ namespace Contracts;
 
 public class OrderPlaced
 {
+    public string Id { get; set; }
+    public string RestaurantId { get; set; }
     public List<OrderItemUpdated> OrderItems { get; set; }
     public DateTime CreatedAt { get; set; }
     public string OrderStatus { get; set; }

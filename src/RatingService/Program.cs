@@ -13,8 +13,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumersFromNamespaceContaining<RestaurantCreatedConsumer>();
-    x.AddConsumersFromNamespaceContaining<RestaurantDeletedConsumer>();
+    x.AddConsumersFromNamespaceContaining<OrderPlacedConsumer>();
 
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("rates", false));
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Polly;
+using RestaurantService.Consumers;
 using RestaurantService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,8 @@ builder.Services.AddMassTransit(x =>
         o.UsePostgres();
         o.UseBusOutbox();
     });
+
+    x.AddConsumersFromNamespaceContaining<RatingConsumer>();
 
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("restaurant", false));
 

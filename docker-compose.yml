@@ -71,6 +71,22 @@ services:
     depends_on:
       - mongodb
       - rabbitmq
+  rate-svc:
+    image: lyyhua/rate-svc:latest
+    build:
+      context: .
+      dockerfile: src/RatingService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMq__Host=rabbitmq
+      - ConnectionStrings__RateDbConnection=mongodb://root:mongopw@mongodb
+      - IdentityServiceUrl=http://identity-svc
+    ports:
+      - 7004:80
+    depends_on:
+      - mongodb
+      - rabbitmq
   identity-svc:
     image: lyyhua/identity-svc:latest
     build:

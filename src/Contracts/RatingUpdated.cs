@@ -2,9 +2,10 @@ using System;
 
 namespace Contracts;
 
-public class Rating
+public class RatingUpdated
 {
     public string RestaurantId { get; set; }
-    public int Stars { get; set; }
+    public int OldStars { get; set; }
+    public int NewStars { get; set; }
     public string Comment { get; set; }
 }

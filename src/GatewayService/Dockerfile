@@ -9,6 +9,7 @@ COPY src/RestaurantService/RestaurantService.csproj src/RestaurantService/Restau
 COPY src/SearchService/SearchService.csproj src/SearchService/SearchService.csproj
 COPY src/GatewayService/GatewayService.csproj src/GatewayService/GatewayService.csproj
 COPY src/OrderService/OrderService.csproj src/OrderService/OrderService.csproj
+COPY src/RatingService/RatingService.csproj src/RatingService/RatingService.csproj
 COPY src/NotificationService/NotificationService.csproj src/NotificationService/NotificationService.csproj
 COPY src/IdentityService/IdentityService.csproj src/IdentityService/IdentityService.csproj
 COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj

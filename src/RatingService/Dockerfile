@@ -18,13 +18,13 @@ COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj
 RUN dotnet restore Food4Student-webapp.sln
 
 # Copy the app folders over
-COPY src/OrderService src/OrderService
+COPY src/RatingService src/RatingService
 COPY src/Contracts src/Contracts
-WORKDIR /app/src/OrderService
+WORKDIR /app/src/RatingService
 RUN dotnet publish -c Release -o /app/src/out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build /app/src/out .
-ENTRYPOINT [ "dotnet", "OrderService.dll" ]
+ENTRYPOINT [ "dotnet", "RatingService.dll" ]

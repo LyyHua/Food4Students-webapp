@@ -3,7 +3,8 @@ using MongoDB.Entities;
 
 namespace RatingService.Models;
 
-public class Restaurant : Entity
+public class FoodOrder : Entity
 {
+    public string RestaurantId { get; set; }
     public string Status { get; set; }
 }

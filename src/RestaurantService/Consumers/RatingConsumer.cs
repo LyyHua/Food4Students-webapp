@@ -14,5 +14,7 @@ public class RatingConsumer(RestaurantDbContext dbContext) : IConsumer<Rating>
 
         restaurant.AverageRating = (restaurant.AverageRating * restaurant.TotalRating + context.Message.Stars) / (restaurant.TotalRating + 1);
         restaurant.TotalRating++;
+
+        await dbContext.SaveChangesAsync();
     }
 }

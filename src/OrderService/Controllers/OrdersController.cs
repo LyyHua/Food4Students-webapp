@@ -222,7 +222,12 @@ public class OrdersController(IMapper mapper, IPublishEndpoint publishEndpoint) 
             return Unauthorized();
 
         await DB.SaveAsync(order);
-        await publishEndpoint.Publish(mapper.Map<OrderStatusUpdated>(order));
+        await publishEndpoint.Publish(new OrderStatusUpdated
+        {
+            Id = order.ID,
+            Status = order.OrderStatus.ToString()
+
+        });
 
         return NoContent();
     }
